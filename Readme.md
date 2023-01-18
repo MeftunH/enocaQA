@@ -36,10 +36,186 @@ Now the result is sent back to the browser (client) by the view.
 
 ![image](https://user-images.githubusercontent.com/48466124/213183675-b5546c0e-0a2c-4876-a841-09edea7f2322.png)
 
+### Model Layer
 
-### Why to use?
+```aidl
+// class that represents model  
+public class Employee {  
+  
+      // declaring the variables  
+       private String EmployeeName;  
+       private String EmployeeId;  
+       private String EmployeeDepartment;  
+          
+      // defining getter and setter methods  
+       public String getId() {  
+          return EmployeeId;  
+       }  
+          
+       public void setId(String id) {  
+          this.EmployeeId = id;  
+       }  
+          
+       public String getName() {  
+          return EmployeeName;  
+       }  
+          
+       public void setName(String name) {  
+          this.EmployeeName = name;  
+       }  
+          
+       public String getDepartment() {  
+              return EmployeeDepartment;  
+           }  
+          
+       public void setDepartment(String Department) {  
+              this.EmployeeDepartment = Department;  
+           }  
+          
+    }  
+```
+
+### View Layer
+
+```aidl
+// class which represents the view  
+public class EmployeeView {  
+  
+      // method to display the Employee details   
+public void printEmployeeDetails (String EmployeeName, String EmployeeId, String EmployeeDepartment){  
+          System.out.println("Employee Details: ");  
+          System.out.println("Name: " + EmployeeName);  
+          System.out.println("Employee ID: " + EmployeeId);  
+          System.out.println("Employee Department: " + EmployeeDepartment);  
+       }  
+    }  
+
+```
+
+### Controller Layer
+```aidl
+// class which represent the controller  
+public class EmployeeController {  
+  
+      // declaring the variables model and view  
+       private Employee model;  
+       private EmployeeView view;  
+   
+      // constructor to initialize  
+       public EmployeeController(Employee model, EmployeeView view) {  
+          this.model = model;  
+          this.view = view;  
+       }  
+   
+      // getter and setter methods   
+       public void setEmployeeName(String name){  
+          model.setName(name);        
+       }  
+   
+       public String getEmployeeName(){  
+          return model.getName();         
+       }  
+   
+       public void setEmployeeId(String id){  
+          model.setId(id);        
+       }  
+   
+       public String getEmployeeId(){  
+          return model.getId();       
+       }  
+   
+       public void setEmployeeDepartment(String Department){  
+              model.setDepartment(Department);        
+       }  
+   
+           public String getEmployeeDepartment(){  
+              return model.getDepartment();         
+       }  
+  
+       // method to update view   
+       public void updateView() {                  
+          view.printEmployeeDetails(model.getName(), model.getId(), model.getDepartment());  
+       }      
+    }  
+```
+# Main Class
+The MVCMain class fetches the employee data from the method where we have entered the values. Then it pushes those values in the model. After that, it initializes the view (EmployeeView.java). When view is initialized, the Controller (EmployeeController.java) is invoked and bind it to Employee class and EmployeeView class. At last the updateView() method (method of controller) update the employee details to be printed to the console.
+```aidl
+public class MVCMain {  
+       public static void main(String[] args) {  
+   
+          // fetching the employee record based on the employee_id from the database  
+          Employee model = retriveEmployeeFromDatabase();  
+   
+          // creating a view to write Employee details on console  
+          EmployeeView view = new EmployeeView();  
+   
+          EmployeeController controller = new EmployeeController(model, view);  
+   
+          controller.updateView();  
+   
+          //updating the model data  
+          controller.setEmployeeName("Nirnay");  
+          System.out.println("\n Employee Details after updating: ");  
+   
+          controller.updateView();  
+       }  
+   
+       private static Employee retriveEmployeeFromDatabase(){  
+          Employee Employee = new Employee();  
+          Employee.setName("Anu");  
+          Employee.setId("11");  
+          Employee.setDepartment("Salesforce");  
+          return Employee;  
+       }  
+    }  
+```
+### Object Oriented Layers
 - The reason for the ring of the MVC Framework is that it makes it difficult for the User Interface and Data layers to leave one.
+ ``` 
+Storage -> DataAccess
+```
+This is usually handeled by an ORM. An ORM will handle database access.
 
+The ORM plus Custom (Model) Objects that you create allow for abstracted data access. This will look something like:
+
+The ORM translates data to and from the database in order to make it usable. The ORM can handle the CRUD operations for you so that querying, updating, and inserting are not present in other parts of your code.
+
+Business Logic
+
+The business logic works with data by accessing, modifying, and saving it.
+
+The business logic can access your models in order to fulfill the accessing and saving of data.
+
+The modifying part is implemented in the business logic.
+
+Business logic can be small, large, or a combination of other pieces of business runner.
+
+Our graph now look like:
+```aidl
+Database <- ORM -> Models <- Business Logic
+```
+Command Processor
+
+The command processor runs pieces of business logic and patches pieces of the overall system together and is sometimes called the controller in MVC
+```aidl
+Database <- ORM -> Models <- Business Logic <- Command Processor
+```
+
+User Interface
+
+The user interface (UI) can be broken into two parts, data representation and user input.
+
+Data representation is called views in MVC and are responsible for taking data and making it readable by the user.
+
+User input triggers pieces of the command processor.
+
+Overall:
+```
+                                                                -> View
+Database <- ORM -> Models <- Business Logic <- Command Processor
+                                                                <- User Input
+```
 ## How To Use
 
 To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:

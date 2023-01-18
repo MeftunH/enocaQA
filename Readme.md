@@ -8,14 +8,12 @@
 
 <p align="center">
   <a href="#qusetion-one">Q1</a> •
-  <a href="#how-to-use">How To Use</a> •
+  <a href="#question-two">Q2</a> •
   <a href="#download">Download</a> •
   <a href="#credits">Credits</a> •
   <a href="#related">Related</a> •
   <a href="#license">License</a>
 </p>
-
-![screenshot](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.gif)
 
 ## Question one
 
@@ -216,74 +214,44 @@ Overall:
 Database <- ORM -> Models <- Business Logic <- Command Processor
                                                                 <- User Input
 ```
-## How To Use
+## Question two
+ By the microservice architecture.So let's think of a structure on an architecture where some of our services run on spring boot, and some of our services run on .net core. In there,we have two options for communication
+### Async. communication
+In Asynchronous communication, the client sends a request but it doesn’t wait for a response from the service. So the key point here is that, the client should not have blocked a thread while waiting for a response.
 
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+The most popular protocol for this Asynchronous communications is AMQP (Advanced Message Queuing Protocol). So with using AMQP protocols, the client sends the message with using message broker systems like Kafka and RabbitMQ queue. The message producer usually does not wait for a response. This message consume from the subscriber systems in async way, and no one waiting for response suddenly.
+An asynchronous communication also divided by 2 according to implementation. An asynchronous systems can be implemented in a one-to-one(queue) mode or one-to-many (topic) mode.
+![image](https://user-images.githubusercontent.com/48466124/213190685-3f17d18a-37bf-46cc-9e05-8619127cc4c1.png)
 
-```bash
-# Clone this repository
-$ git clone https://github.com/amitmerchant1990/electron-markdownify
+In a one-to-one(queue) implementation there is a single producer and single receiver. But in one-to-many (topic) implementation has Multiple receivers. Each request can be processed by zero to multiple receivers. one-to-many (topic) communications must be asynchronous.
 
-# Go into the repository
-$ cd electron-markdownify
+So we will see this communication with the publish/subscribe mechanism used in patterns like Event-driven microservices architecture in the upcoming articles. Basically an event-bus or message broker system is publishing events between multiple microservices, and communication provide with subscribing these events in an async way.
 
-# Install dependencies
-$ npm install
+Kafka and RabbitMQ is the best tools for this operations.
 
-# Run the app
-$ npm start
-```
+As you can see that we have understand Microservices Communication types — Sync or Async Communication, And microservice-based application will often use a combination of these 2 communication styles. So we will also design our e-commerce architecture with using both communication types.
 
-> **Note**
-> If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
+But before that, lets elaborate the Synchronous communication and underlying mechanism.
+### Another alternative is Sync. communication
+Basically, we can say that Synchronous communication is using HTTP or gRPC protocol for returning sync response. The client sends a request and waits for a response from the service. So that means client code block their thread, until the response reach from the server.AA
+![image](https://user-images.githubusercontent.com/48466124/213190418-170c3439-fe93-433f-a70f-97abb4c40ace.png)
+, In synchronous communication, the client sends a request with using http protocols and waits for a response from the service. The synchronous communication protocols can be HTTP or HTTPS.When we are using a synchronous request/response-based communication type, HTTP protocols and REST approaches are the most common way to use to design APIs, especially if we’re exposing APIs to the outside of the microservice cluster.If we’re communicating between services internally within our microservices cluster, we might also use binary format communication mechanisms like gRPC. gRPC is one of the best way to communicate for internal microservice communication. gRPC is a modern open source high performance RPC framework that can run in any environment. It can efficiently connect services in and across data centers with pluggable support for load balancing, tracing, health checking and authentication. It is also important to note that gRPC is not a REST framework. It is a different approach to service-to-service communication that is better suited for machines communicating with machines. gRPC is based on the idea of defining a service, specifying the methods that can be called remotely with their parameters and return types. gRPC uses protocol buffers, Google’s data interchange format, as the interface definition language, for describing both the service interface and the structure of the payload messages. You can define your service once in a .proto file and implement clients and servers in any of gRPC’s supported languages, which in turn can be run in environments ranging from servers inside Google to your own tablet - all the complexity of communication between different languages and environments is handled for you by gRPC. You also get all the advantages of working with protocol buffers, including efficient serialization, a simple IDL, and easy interface updating.It is focused on high performance and uses the HTTP/2 protocol to transport binary messages. It is relies on the Protocol Buffers language to define service contracts. Protocol Buffers, also known as Protobuf, allow you to define the interface to be used in service to service communication regardless of the programming language.In GRPC, a client application can directly call a method on a server application on a different machine like it were a local object, making it easy for you to build distributed applications and services.![image](https://user-images.githubusercontent.com/48466124/213191569-281d78c6-8d23-4f9d-9b40-900ea31a2da2.png)
 
+gRPC clients and servers can work and talk to each other in a different of environments, from servers to your own desktop applications, and that can be written in any language that gRPC supports. For example, you can easily create a gRPC server in Java or C# with clients in.
 
-## Download
+### RPC life cycles
+Unary RPCs where the client sends a single request to the server and returns a single response back, just like a normal function call.
 
-You can [download](https://github.com/amitmerchant1990/electron-markdownify/releases/tag/v1.2.0) the latest installable version of Markdownify for Windows, macOS and Linux.
+Server streaming RPCs where the client sends a request to the server and gets a stream to read a sequence of messages back. The client reads from the returned stream until there are no more messages. gRPC guarantees message ordering within an individual RPC call.
 
-## Emailware
+Client streaming RPCs where the client writes a sequence of messages and sends them to the server, again using a provided stream. Once the client has finished writing the messages, it waits for the server to read them and return its response. Again gRPC guarantees message ordering within an individual RPC call.
 
-Markdownify is an [emailware](https://en.wiktionary.org/wiki/emailware). Meaning, if you liked using this app or it has helped you in any way, I'd like you send me an email at <bullredeyes@gmail.com> about anything you'd want to say about this software. I'd really appreciate it!
+Bidirectional streaming RPCs where both sides send a sequence of messages using a read-write stream. The two streams operate independently, so clients and servers can read and write in whatever order they like: for example, the server could wait to receive all the client messages before writing its responses, or it could alternately read a message then write a message, or some other combination of reads and writes.
+![image](https://user-images.githubusercontent.com/48466124/213192058-cce39918-cd75-4c91-9f31-18f10471093e.png)
 
-## Credits
-
-This software uses the following open source packages:
-
-- [Electron](http://electron.atom.io/)
-- [Node.js](https://nodejs.org/)
-- [Marked - a markdown parser](https://github.com/chjj/marked)
-- [showdown](http://showdownjs.github.io/showdown/)
-- [CodeMirror](http://codemirror.net/)
-- Emojis are taken from [here](https://github.com/arvida/emoji-cheat-sheet.com)
-- [highlight.js](https://highlightjs.org/)
-
-## Related
-
-[markdownify-web](https://github.com/amitmerchant1990/markdownify-web) - Web version of Markdownify
-
-## Support
-
-<a href="https://www.buymeacoffee.com/5Zn8Xh3l9" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-
-<p>Or</p> 
-
-<a href="https://www.patreon.com/amitmerchant">
-	<img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
-</a>
-
-## You may also like...
-
-- [Pomolectron](https://github.com/amitmerchant1990/pomolectron) - A pomodoro app
-- [Correo](https://github.com/amitmerchant1990/correo) - A menubar/taskbar Gmail App for Windows and macOS
 
 ## License
 
 MIT
 
 ---
-
-> [amitmerchant.com](https://www.amitmerchant.com) &nbsp;&middot;&nbsp;
-> GitHub [@amitmerchant1990](https://github.com/amitmerchant1990) &nbsp;&middot;&nbsp;
-> Twitter [@amit_merchant](https://twitter.com/amit_merchant)
-

@@ -34,7 +34,7 @@ The controller then calls the model. It gathers the requested data.
 Then the controller transfers the data retrieved to the view layer.
 Now the result is sent back to the browser (client) by the view.
 
-![img.png](img.png)
+![image](https://user-images.githubusercontent.com/48466124/213183675-b5546c0e-0a2c-4876-a841-09edea7f2322.png)
 
 
 ### Why to use?

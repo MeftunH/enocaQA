@@ -10,7 +10,7 @@
   <a href="#answer-one">A1</a> •
   <a href="#answer-two">A2</a> •
   <a href="#answer-three">A3</a> •
-  <a href="#credits">Credits</a> •
+  <a href="#answer-four">A4</a> •
   <a href="#related">Related</a> •
   <a href="#license">License</a>
 </p>
@@ -422,6 +422,11 @@ public class HomeController {
     }
 }
 ```
+
+## Answer four
+![image](https://user-images.githubusercontent.com/48466124/213201002-160d1bec-2c78-48c4-9b6b-8742aa3dc946.png)
+Solution path - ```https://github.com/MeftunH/enocaQA/blob/master/core/StarPattern.java```
+
 ## License
 
 MIT

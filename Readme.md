@@ -215,7 +215,8 @@ Database <- ORM -> Models <- Business Logic <- Command Processor
                                                                 <- User Input
 ```
 ## Question two
- By the microservice architecture.So let's think of a structure on an architecture where some of our services run on spring boot, and some of our services run on .net core. In there,we have two options for communication
+ Short answer - By the microservice architecture.
+ So let's think of a structure on an architecture where some of our services run on spring boot, and some of our services run on .net core. In there,we have two options for communication
 ### Async. communication
 In Asynchronous communication, the client sends a request but it doesn’t wait for a response from the service. So the key point here is that, the client should not have blocked a thread while waiting for a response.
 
@@ -249,7 +250,178 @@ Client streaming RPCs where the client writes a sequence of messages and sends t
 Bidirectional streaming RPCs where both sides send a sequence of messages using a read-write stream. The two streams operate independently, so clients and servers can read and write in whatever order they like: for example, the server could wait to receive all the client messages before writing its responses, or it could alternately read a message then write a message, or some other combination of reads and writes.
 ![image](https://user-images.githubusercontent.com/48466124/213192058-cce39918-cd75-4c91-9f31-18f10471093e.png)
 
+## Question three
+ ### Short answer - By the using Websockets
+ WebSocket is a bi-directional communication protocol between a browser and a server.
+ ![image](https://user-images.githubusercontent.com/48466124/213195307-febc350a-fbea-404b-bd57-0e706212d7a5.png)
 
+Let’s imagine that we need to check new incoming messages without reloading a page. One way could be sending regular AJAX requests. It’s called polling. Another way could be long polling. In this case, a server holds an AJAX request and returns a response only when new messages appear. In mentioned approaches the client asks a server and gets a response. In case of web sockets, there is an established connection between a client and a server, and the server can send a message to the client without a prior request.
+For better understanding of how web sockets work, let’s create a Spring Boot web-application which allows:
+
+to send messages to all connected users
+to send notifications from a server to a client without a prior request
+
+To use web sockets in a Spring Boot application, the following dependency should be added:
+```aidl
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+```
+Web socket configuration
+
+```aidl
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+    @Autowired
+    private WebSocketSessionServiceImpl webSocketSessionService;
+    
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws")
+                .withSockJS();
+    }
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.setApplicationDestinationPrefixes("/app");
+        registry.enableSimpleBroker("/topic", "/queue");
+    }
+    @Bean
+    public PresenceEventListener presenceEventListener() {
+        return new PresenceEventListener(webSocketSessionService);
+    }
+    
+```
+Here the web socket endpoint “/ws” is registered with two message brokers “/topic” and “/queue”. The flow is the following: a client establishes a connection with an endpoint and subscribes to message brokers to send and process messages.
+
+PresenceEventListener is used to manage web socket sessions. When a new session is created we can map it to a current user and store this mapping for further usage.
+
+```
+aidl
+public class PresenceEventListener {
+    private final WebSocketSessionServiceImpl webSocketSessionService;
+    
+    public PresenceEventListener(WebSocketSessionServiceImpl webSocketSessionService) {
+        this.webSocketSessionService = webSocketSessionService;
+    }
+    @EventListener
+    private void handleSessionConnected(SessionConnectEvent event) {
+        Principal principal = event.getUser();
+        webSocketSessionService.setUserSession(principal.getName(), principal);
+    }
+    @EventListener
+    private void handleSessionDisconnect(SessionDisconnectEvent event) {
+        Principal principal = event.getUser();
+        webSocketSessionService.removeSession(principal.getName());
+    }
+}
+```
+
+```aidl
+@Service
+public class WebSocketSessionServiceImpl {
+    
+    private Map<String, Principal> sessionMap = new ConcurrentHashMap<>();
+    
+    public void setUserSession(String userName, Principal principal) {
+        sessionMap.put(userName, principal);
+    }
+    
+    public void removeSession(String userName) {
+        sessionMap.remove(userName);
+    }
+    
+    public boolean sessionExists(String userName) {
+        return sessionMap.containsKey(userName);
+    }
+    
+}
+```
+Security Config
+```
+@Configuration
+@EnableConfigurationProperties
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("user1")
+                    .password(passwordEncoder().encode("password"))
+                    .roles("USER")
+                .and()
+                .withUser("user2")
+                    .password(passwordEncoder().encode("password"))
+                    .roles("USER");
+    }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                    .antMatcher("/**").authorizeRequests()
+                    .antMatchers("/login/**", "/logout/**").permitAll()
+                    .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/")
+                    .permitAll()
+                .and()
+                .logout()
+                    .logoutSuccessUrl("/login")
+                    .deleteCookies("JSESSIONID")
+                    .invalidateHttpSession(true)
+                    .permitAll();
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+```
+Controller
+```aidl
+@Controller
+public class HomeController {
+    private static final String WS_ENDPOINT = "/ws";
+    private static final String MESSAGES_TOPIC = "/topic/messages";
+    private static final String EVENTS_QUEUE = "/queue/events";
+    private static final String NOTIFICATION_MSG = "Today is the last day of your trial version.";
+    @Autowired
+    private WebSocketSessionServiceImpl webSocketSessionService;
+    
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+    
+    @RequestMapping(value = "/")
+    public String home(Principal principal, Model model) {
+        model.addAttribute("user", principal);
+        
+        return "home";
+    }
+    @MessageMapping(WS_ENDPOINT)
+    @SendTo(MESSAGES_TOPIC)
+    public Message message(Message message) {
+        return message;
+    }
+    @ResponseBody
+    @RequestMapping(value = "/notify/{userName}")
+    public void sendNotificationTrigger(@PathVariable String userName) {
+        if (webSocketSessionService.sessionExists(userName)) {
+            Message message = new Message(null, NOTIFICATION_MSG);
+            simpMessagingTemplate.convertAndSendToUser(userName, EVENTS_QUEUE, message);
+        }
+    }
+    @RequestMapping(value = "/login")
+    public String login() {
+        return "login";
+    }
+    @RequestMapping(value = "/logout")
+    public String logout() {
+        return "login";
+    }
+}
+```
 ## License
 
 MIT

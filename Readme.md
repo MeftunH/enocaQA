@@ -7,15 +7,15 @@
 <h4 align="center">QA session by <a href="https://www.enoca.com/" target="_blank">Enoca</a>.</h4>
 
 <p align="center">
-  <a href="#qusetion-one">Q1</a> •
-  <a href="#question-two">Q2</a> •
-  <a href="#download">Download</a> •
+  <a href="#answer-one">A1</a> •
+  <a href="#answer-two">A2</a> •
+  <a href="#answer-three">A3</a> •
   <a href="#credits">Credits</a> •
   <a href="#related">Related</a> •
   <a href="#license">License</a>
 </p>
 
-## Question one
+## Answer one
 
 The Model View Controller (MVC) design pattern specifies that an application consist of a data model, presentation information, and control information. The pattern requires that each of these be separated into different objects.
   MVC is more of an architectural pattern, but not for complete application. MVC mostly relates to the UI / interaction layer of an application. You’re still going to need business logic layer, maybe some service layer and data access layer.
@@ -214,7 +214,7 @@ Overall:
 Database <- ORM -> Models <- Business Logic <- Command Processor
                                                                 <- User Input
 ```
-## Question two
+## Answer two
  Short answer - By the microservice architecture.
  So let's think of a structure on an architecture where some of our services run on spring boot, and some of our services run on .net core. In there,we have two options for communication
 ### Async. communication
@@ -250,7 +250,7 @@ Client streaming RPCs where the client writes a sequence of messages and sends t
 Bidirectional streaming RPCs where both sides send a sequence of messages using a read-write stream. The two streams operate independently, so clients and servers can read and write in whatever order they like: for example, the server could wait to receive all the client messages before writing its responses, or it could alternately read a message then write a message, or some other combination of reads and writes.
 ![image](https://user-images.githubusercontent.com/48466124/213192058-cce39918-cd75-4c91-9f31-18f10471093e.png)
 
-## Question three
+## Answer three
  ### Short answer - By the using Websockets
  WebSocket is a bi-directional communication protocol between a browser and a server.
  ![image](https://user-images.githubusercontent.com/48466124/213195307-febc350a-fbea-404b-bd57-0e706212d7a5.png)

@@ -11,7 +11,7 @@
   <a href="#answer-two">A2</a> •
   <a href="#answer-three">A3</a> •
   <a href="#answer-four">A4</a> •
-  <a href="#related">Related</a> •
+  <a href="#answer-five">A5</a> •
   <a href="#license">License</a>
 </p>
 
@@ -427,8 +427,97 @@ public class HomeController {
 ![image](https://user-images.githubusercontent.com/48466124/213201002-160d1bec-2c78-48c4-9b6b-8742aa3dc946.png)
 Solution path - ```https://github.com/MeftunH/enocaQA/blob/master/core/StarPattern.java```
 
-## License
+## Answer five
+ ### Connectivity Test
+Telnet and nc are common tools used to test port connectivity from Linux server. Telnet can be used to test tcp port connections, where as nc can be used to test both tcp/udp ports connectivity. Make sure telnet and nc tools are installed on the Linux server you are trying to test connectivity
+```aidl
+# yum install nc
+# yum install telnet
+```
+#### Testing TCP port connectivity with telnet
+Requesting telnet to connect 
+```aidl
+# telnet [hostname/IP address] [port number]
+```
+#### Answer for successful from telnet
+```aidl
+# telnet 192.168.12.10 22
+Trying 192.168.12.10...
+Connected to 192.168.12.10.
+Escape character is '^]'.
+SSH-2.0-OpenSSH_6.6.1
 
+Protocol mismatch.
+Connection closed by foreign host.
+```
+#### Answer for unsuccessful from telnet
+
+```aidl
+# telnet 192.168.12.10 22
+Trying 192.168.12.10...
+telnet: connect to address 192.168.12.10: No route to host
+```
+#### Using nc command to test TCP port connectivity
+```aidl
+# nc -vz [hostname/IP address] [port number]
+```
+#### Answer for successful from nc
+```aidl
+# nc -z -v 192.168.10.12 22
+Connection to 192.118.20.95 22 port [tcp/ssh] succeeded!
+````
+#### Answer for unsuccessful from nc
+```aidl
+# nc -z -v 192.168.10.12 22
+nc: connect to 192.118.20.95 port 22 (tcp) failed: No route to host
+````
+### How to reach to the server from the outside world
+#### 1. Using SSH
+```aidl
+# ssh [username]@[hostname/IP address]
+``` 
+## License
+#### How do you assign a file to a server
+The easiest way to create a new file in Linux is by using the touch command.
+```aidl
+# touch [filename]
+```
+This creates a new empty file named test.txt. You can see it by entering:
+The ls command lists the contents of the current directory. Since no other directory was specified, the touCreate File with cat Command
+Create File with cat Command
+The cat command is used to create a new file or to view the contents of an existing file. The cat command is also used to concatenate files and print the output on the standard output.
+```aidl
+cat > test3.txt
+```
+Create File with echo Command
+```aidl
+echo "This is a test file" > test4.txt
+```
+#### how to extract files from server
+If you are using another web host or server provider, the SSH details can typically be found in your dashboard as well.
+
+After you have found the login details, you can log in with the following SSH command.
+```aidl
+ssh [username]@[hostname/IP address] -p [port]
+```
+In some Linux distributions, the unzip package is not installed by default. Kinsta users do not have to worry about installing the unzip package because it is automatically installed on all our site containers. If you are managing a server that does not have the unzip package installed, you can use the following command to install it – note that sudo level permissions are required.
+The next step is to navigate to the ZIP file and unzip it. To navigate to the correct folder, we can use the cd command, as shown below.
+```aidl
+cd directory
+cd ~/private
+//To unzip the file to the current directory, use the command below.
+unzip your-file.zip
+//To unzip the file to a different directory, use this command instead.
+unzip your-file.zip -d directory
+//For our backup.zip file, we want to unzip it to our ~/public folder, which can be done with the command below.
+unzip backup.zip -d ~/public
+```
+
+If you would like to remove the original ZIP file after unzipping it, you can use the rm command like this.
+
+```aidl
+rm /path/to/your-file.zip
+```
 MIT
 
 ---

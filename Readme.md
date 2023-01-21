@@ -567,6 +567,14 @@ Create new comment for a tutorial Request body as JSON
     "content": "Comment 1 content",
 }
 ```
+## Answer seven
+```aidl
+updatedAt:[20200101 TO *]
+```
+You can also use the filter query (fq) parameter to filter your results.
+```aidl
+*:*&fq=updatedAt:[20200101 TO *]
+```
 
 MIT
 

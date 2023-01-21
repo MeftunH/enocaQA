@@ -6,6 +6,9 @@
 
 <h4 align="center">QA session by <a href="https://www.enoca.com/" target="_blank">Enoca</a>.</h4>
 
+
+[![pt-br](https://img.shields.io/badge/lang-tr-green.svg)](https://github.com/MeftunH/enocaQA/blob/master/Readme.tr.md)
+
 <p align="center">
   <a href="#answer-one">A1</a> •
   <a href="#answer-two">A2</a> •

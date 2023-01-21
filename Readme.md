@@ -12,7 +12,8 @@
   <a href="#answer-three">A3</a> •
   <a href="#answer-four">A4</a> •
   <a href="#answer-five">A5</a> •
-  <a href="#license">License</a>
+  <a href="#answer-six">A6</a> •
+  <a href="#answer-seven">A7</a> •
 </p>
 
 ## Answer one

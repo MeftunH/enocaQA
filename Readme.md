@@ -577,7 +577,3 @@ You can also use the filter query (fq) parameter to filter your results.
 ```aidl
 *:*&fq=updatedAt:[20200101 TO *]
 ```
-
-MIT
-
----

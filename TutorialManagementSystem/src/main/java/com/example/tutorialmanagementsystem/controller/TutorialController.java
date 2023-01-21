@@ -3,6 +3,7 @@ package com.example.tutorialmanagementsystem.controller;
 import com.example.tutorialmanagementsystem.exception.ResourceNotFoundException;
 import com.example.tutorialmanagementsystem.model.Tutorial;
 import com.example.tutorialmanagementsystem.repository.TutorialRepository;
+import com.example.tutorialmanagementsystem.service.TutorialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,73 +18,48 @@ import java.util.List;
 public class TutorialController {
 
     @Autowired
-    TutorialRepository tutorialRepository;
+    private TutorialService tutorialService;
+    @Autowired
+    private TutorialRepository tutorialRepository;
 
     @GetMapping("/tutorials")
     public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String title) {
-        List<Tutorial> tutorials = new ArrayList<>();
 
-        if (title == null)
-            tutorialRepository.findAll().forEach(tutorials::add);
-        else
-            tutorialRepository.findByTitleContaining(title).forEach(tutorials::add);
-
-        if (tutorials.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(tutorials, HttpStatus.OK);
+        return new ResponseEntity<>(tutorialService.getAllTutorials(title), HttpStatus.OK);
     }
 
     @GetMapping("/tutorials/{id}")
     public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
-        Tutorial tutorial = tutorialRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + id));
-
-        return new ResponseEntity<>(tutorial, HttpStatus.OK);
+        return new ResponseEntity<>(tutorialService.getTutorialById(id), HttpStatus.OK);
     }
 
     @PostMapping("/tutorials")
     public ResponseEntity<Tutorial> createTutorial(@RequestBody Tutorial tutorial) {
-        Tutorial _tutorial = tutorialRepository.save(new Tutorial(tutorial.getTitle(), tutorial.getDescription(), true));
-        return new ResponseEntity<>(_tutorial, HttpStatus.CREATED);
+        return new ResponseEntity<>(tutorialService.createTutorial(tutorial), HttpStatus.CREATED);
     }
 
     @PutMapping("/tutorials/{id}")
     public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial) {
-        Tutorial _tutorial = tutorialRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found Tutorial with id = " + id));
-
-        _tutorial.setTitle(tutorial.getTitle());
-        _tutorial.setDescription(tutorial.getDescription());
-        _tutorial.setPublished(tutorial.isPublished());
-
-        return new ResponseEntity<>(tutorialRepository.save(_tutorial), HttpStatus.OK);
+        return new ResponseEntity<>(tutorialService.save(id,tutorial), HttpStatus.OK);
     }
 
     @DeleteMapping("/tutorials/{id}")
     public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
-        tutorialRepository.deleteById(id);
+        tutorialService.deleteTutorial(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/tutorials")
     public ResponseEntity<HttpStatus> deleteAllTutorials() {
-        tutorialRepository.deleteAll();
+        tutorialService.deleteAllTutorials();
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/tutorials/published")
     public ResponseEntity<List<Tutorial>> findByPublished() {
-        List<Tutorial> tutorials = tutorialRepository.findByPublished(true);
-
-        if (tutorials.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(tutorials, HttpStatus.OK);
+        return new ResponseEntity<>(tutorialService.findByPublished(), HttpStatus.OK);
     }
 }
 

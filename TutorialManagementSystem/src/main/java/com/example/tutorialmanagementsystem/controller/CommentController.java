@@ -5,6 +5,7 @@ import com.example.tutorialmanagementsystem.model.Comment;
 import com.example.tutorialmanagementsystem.repository.CommentRepository;
 import com.example.tutorialmanagementsystem.repository.TutorialRepository;
 import com.example.tutorialmanagementsystem.service.CommentService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,8 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class CommentController {
-
-    @Autowired
-    private TutorialRepository tutorialRepository;
-
     @Autowired
     private CommentService commentService;
     @Autowired

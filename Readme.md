@@ -18,10 +18,10 @@
 ## Answer one
 
 The Model View Controller (MVC) design pattern specifies that an application consist of a data model, presentation information, and control information. The pattern requires that each of these be separated into different objects.
-  MVC is more of an architectural pattern, but not for complete application. MVC mostly relates to the UI / interaction layer of an application. You’re still going to need business logic layer, maybe some service layer and data access layer.
+MVC is more of an architectural pattern, but not for complete application. MVC mostly relates to the UI / interaction layer of an application. You’re still going to need business logic layer, maybe some service layer and data access layer.
 The model designs based on the MVC architecture follow MVC design pattern. The application logic is separated from the user interface while designing the software using model designs.
 
-  The MVC pattern architecture consists of three layers:
+The MVC pattern architecture consists of three layers:
 
 - Model: It represents the business layer of application. It is an object to carry the data that can also contain the logic to update controller if data is changed.
 - View: It represents the presentation layer of application. It is used to visualize the data that the model contains.
@@ -215,8 +215,8 @@ Database <- ORM -> Models <- Business Logic <- Command Processor
                                                                 <- User Input
 ```
 ## Answer two
- Short answer - By the microservice architecture.
- So let's think of a structure on an architecture where some of our services run on spring boot, and some of our services run on .net core. In there,we have two options for communication
+Short answer - By the microservice architecture.
+So let's think of a structure on an architecture where some of our services run on spring boot, and some of our services run on .net core. In there,we have two options for communication
 ### Async. communication
 In Asynchronous communication, the client sends a request but it doesn’t wait for a response from the service. So the key point here is that, the client should not have blocked a thread while waiting for a response.
 
@@ -251,9 +251,9 @@ Bidirectional streaming RPCs where both sides send a sequence of messages using 
 ![image](https://user-images.githubusercontent.com/48466124/213192058-cce39918-cd75-4c91-9f31-18f10471093e.png)
 
 ## Answer three
- ### Short answer - By the using Websockets
- WebSocket is a bi-directional communication protocol between a browser and a server.
- ![image](https://user-images.githubusercontent.com/48466124/213195307-febc350a-fbea-404b-bd57-0e706212d7a5.png)
+### Short answer - By the using Websockets
+WebSocket is a bi-directional communication protocol between a browser and a server.
+![image](https://user-images.githubusercontent.com/48466124/213195307-febc350a-fbea-404b-bd57-0e706212d7a5.png)
 
 Let’s imagine that we need to check new incoming messages without reloading a page. One way could be sending regular AJAX requests. It’s called polling. Another way could be long polling. In this case, a server holds an AJAX request and returns a response only when new messages appear. In mentioned approaches the client asks a server and gets a response. In case of web sockets, there is an established connection between a client and a server, and the server can send a message to the client without a prior request.
 For better understanding of how web sockets work, let’s create a Spring Boot web-application which allows:
@@ -428,14 +428,14 @@ public class HomeController {
 Solution path - ```https://github.com/MeftunH/enocaQA/blob/master/core/StarPattern.java```
 
 ## Answer five
- ### Connectivity Test
+### Connectivity Test
 Telnet and nc are common tools used to test port connectivity from Linux server. Telnet can be used to test tcp port connections, where as nc can be used to test both tcp/udp ports connectivity. Make sure telnet and nc tools are installed on the Linux server you are trying to test connectivity
 ```aidl
 # yum install nc
 # yum install telnet
 ```
 #### Testing TCP port connectivity with telnet
-Requesting telnet to connect 
+Requesting telnet to connect
 ```aidl
 # telnet [hostname/IP address] [port number]
 ```
@@ -476,7 +476,7 @@ nc: connect to 192.118.20.95 port 22 (tcp) failed: No route to host
 ```aidl
 # ssh [username]@[hostname/IP address]
 ``` 
-## License
+
 #### How do you assign a file to a server
 The easiest way to create a new file in Linux is by using the touch command.
 ```aidl
@@ -518,6 +518,56 @@ If you would like to remove the original ZIP file after unzipping it, you can us
 ```aidl
 rm /path/to/your-file.zip
 ```
+
+## Answer six
+Solution path - ```https://github.com/MeftunH/enocaQA/tree/master/TutorialManagementSystem```
+
+### How to run application
+
+#### 1. Clone the project
+```aidl
+git clone
+```
+#### 2. Open the project with your IDE
+#### 3. Run the project
+#### 4. Open the browser or postman and type ```http://localhost:8081/``` and then use the endpoints
+### DB Structure
+![image](https://user-images.githubusercontent.com/48466124/213847149-e742e810-b30e-4fad-b4dc-85dc9116b5c9.png)
+
+### Tables
+![image](https://user-images.githubusercontent.com/48466124/213846806-17c14f8b-9cb5-45d9-bed9-5c42c6336e91.png)
+### Endpoints
+```aidl
+POST	/api/tutorials	=>create new Tutorial
+POST	/api/tutorials/:id/comments	=> create new Comment for a Tutorial
+GET	/api/tutorials/:id/comments	=>retrieve all Comments of a Tutorial
+GET	/api/comments/:id	=>retrieve a Comment by :id
+PUT	/api/comments/:id	=>update a Comment by :id
+DELETE	/api/comments/:id	=>delete a Comment by :id
+DELETE	/api/tutorials/:id	=>delete a Tutorial (and its Comments) by :id
+DELETE	/api/tutorials/:id/comments	=>delete all Comments of a Tutorial
+```
+Create new tutorial
+![image](https://user-images.githubusercontent.com/48466124/213846999-9712eae5-a55a-4cbc-9f44-c42e618099d1.png)
+![image](https://user-images.githubusercontent.com/48466124/213847045-8ab213e1-367d-4100-9118-344d04ff93a4.png)
+
+Request body as JSON
+```aidl
+{
+    "description": "Tut 1 description",
+    "published": true,
+    "title": "Tut 1 title"
+
+}
+```
+
+Create new comment for a tutorial Request body as JSON
+```aidl
+{
+    "content": "Comment 1 content",
+}
+```
+
 MIT
 
 ---

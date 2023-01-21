@@ -5,12 +5,14 @@ import com.example.tutorialmanagementsystem.model.Comment;
 import com.example.tutorialmanagementsystem.model.Tutorial;
 import com.example.tutorialmanagementsystem.repository.CommentRepository;
 import com.example.tutorialmanagementsystem.repository.TutorialRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
